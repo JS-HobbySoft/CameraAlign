@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/viewFinder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <ImageView
+        android:id="@+id/basisImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:alpha="0.50"
+        android:contentDescription="@string/imageViewDescription"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_launcher_background"
+        android:visibility="visible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <Button
+        android:id="@+id/camera_flip_button"
+        android:layout_width="@dimen/buttonWidth"
+        android:layout_height="@dimen/buttonHeight"
+        android:layout_marginStart="@dimen/marginValue"
+        android:layout_marginEnd="@dimen/marginValue"
+        android:layout_marginBottom="@dimen/marginValueBottom"
+        android:elevation="2dp"
+        android:text="@string/front_back_camera_string"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/image_capture_button" />
+
+<!--
+    <ImageButton
+        android:id="@+id/camera_flip_button"
+        android:layout_width="@dimen/buttonWidth"
+        android:layout_height="@dimen/buttonHeight"
+        android:layout_marginStart="@dimen/marginValue"
+        android:layout_marginEnd="@dimen/marginValue"
+        android:layout_marginBottom="@dimen/marginValueBottom"
+        android:elevation="2dp"
+        android:contentDescription="@string/front_back_camera_string"
+        android:src="@drawable/ic_flip_camera_blue_foreground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/image_capture_button" />
+
+-->
+    <Button
+        android:id="@+id/image_capture_button"
+        android:layout_width="@dimen/buttonWidth"
+        android:layout_height="@dimen/buttonHeight"
+        android:layout_marginStart="@dimen/marginValue"
+        android:layout_marginEnd="@dimen/marginValue"
+        android:layout_marginBottom="@dimen/marginValueBottom"
+        android:elevation="2dp"
+        android:text="@string/capture_image_string"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/camera_flip_button"
+        app:layout_constraintEnd_toStartOf="@id/buttonLoadPicture" />
+
+
+    <!--
+        <EditText
+            android:id="@+id/transET"
+            android:layout_width="@dimen/buttonWidth"
+            android:layout_height="@dimen/buttonHeight"
+            android:layout_marginStart="@dimen/marginValue"
+            android:layout_marginEnd="@dimen/marginValue"
+            android:layout_marginBottom="@dimen/marginValueBottom"
+            android:inputType="numberDecimal"
+            android:text="@string/etTransLabel"
+            android:autofillHints="0.5"
+            android:hint="@string/etHint"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/buttonLoadPicture"
+            app:layout_constraintStart_toEndOf="@id/image_rotate_button" />
+    -->
+
+    <Button
+        android:id="@+id/buttonLoadPicture"
+        android:layout_width="@dimen/buttonWidth"
+        android:layout_height="@dimen/buttonHeight"
+        android:layout_marginStart="@dimen/marginValue"
+        android:layout_marginEnd="@dimen/marginValue"
+        android:layout_marginBottom="@dimen/marginValueBottom"
+        android:elevation="2dp"
+        android:text="@string/loadPictureButtonString"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/image_capture_button"
+        app:layout_constraintEnd_toStartOf="@id/image_rotate_button"/>
+
+    <Button
+        android:id="@+id/image_rotate_button"
+        android:layout_width="@dimen/buttonWidth"
+        android:layout_height="@dimen/buttonHeight"
+        android:layout_marginStart="@dimen/marginValue"
+        android:layout_marginEnd="@dimen/marginValue"
+        android:layout_marginBottom="@dimen/marginValueBottom"
+        android:elevation="2dp"
+        android:text="@string/rotate_image_string"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/buttonLoadPicture"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/vertical_center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".50" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

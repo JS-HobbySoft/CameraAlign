@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">CameraAlign</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="start_capture">Start Capture</string>
+    <string name="stop_capture">Stop Capture</string>
+    <string name="imageViewDescription">Image to compare</string>
+    <string name="loadPictureButtonString">Load Image</string>
+    <string name="change_transparency_string">Change transparency</string>
+    <string name="settings_menu_name">Settings</string>
+    <string name="textTransparencyString">Enter value for image transparency\n0=transparent / 255=opaque</string>
+    <string name="toastBadTransparency">Transparency must be between 0 (transparent) and 255 (opaque)</string>
+    <string name="rotate_image_string">Rotate image</string>
+    <string name="etTransLabel">Enter transparency\n0=transparent 1=opaque</string>
+    <string name="etHint">0.5</string>
+    <string name="capture_image_string">Take image</string>
+    <string name="front_back_camera_string">Flip camera</string>
+</resources>

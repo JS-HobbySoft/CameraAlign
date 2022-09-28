@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <EditTextPreference
+        android:defaultValue="125"
+        android:key="textTransparencyKey"
+        android:title="@string/textTransparencyString"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:maxLines="1"
+        app:useSimpleSummaryProvider="true"/>
+
+<!--
+    <ListPreference
+        app:defaultValue="center_inside"
+        app:entries="@array/scaleTypeEntries"
+        app:entryValues="@array/scaleTypeValues"
+        app:key="scaleTypeKey"
+        app:title="@string/imageScaleTypeString"
+        app:useSimpleSummaryProvider="true" />
+-->
+
+</PreferenceScreen>

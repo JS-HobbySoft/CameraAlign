@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity() {
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
+        // trivial change to test Git commits
         // Request camera permissions
         if (allPermissionsGranted()) {
             startCamera(cameraSel)

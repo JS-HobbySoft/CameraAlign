@@ -1,23 +1,15 @@
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath('com.android.tools.build:gradle:7.3.0')
-    }
-}
-
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
 }
 
+android.buildTypes.release.ndk.debugSymbolLevel = 'FULL'
+android.defaultConfig.ndk.debugSymbolLevel = 'FULL'
+
 android {
     compileSdk 33
 
-    ndkVersion = "25.1.8937393"
+    ndkVersion '25.1.8937393'
 
     defaultConfig {
         applicationId "org.jshobbysoft.cameraalign"
@@ -26,9 +18,6 @@ android {
         versionCode 2
         versionName "1.01"
         signingConfig signingConfigs.debug
-        ndk {
-            debugSymbolLevel = 'FULL'
-        }
     }
 
     buildTypes {

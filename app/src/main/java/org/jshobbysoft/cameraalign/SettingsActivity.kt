@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2022 JS HobbySoft.
+ * All rights reserved.
+ */
+
 package org.jshobbysoft.cameraalign
 
 import android.os.Bundle

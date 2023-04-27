@@ -7,15 +7,15 @@ RepoType: git
 Repo: https://github.com/JS-HobbySoft/CameraAlign
 
 Builds:
-  - versionName: '1.0'
+  - versionName: '1.01'
     versionCode: 2
-    commit: v1.0
+    commit: v1.01
     subdir: app
     gradle:
       - yes
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
-CurrentVersion: '1.0'
+CurrentVersion: '1.01'
 CurrentVersionCode: 2
 

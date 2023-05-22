@@ -1,0 +1,1 @@
+Reduce minimum SDK level to allow the app to run on older devices

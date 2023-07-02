@@ -27,7 +27,9 @@ import androidx.camera.core.CameraSelector
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.widget.SeekBar
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.camera.core.Camera
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import org.jshobbysoft.cameraalign.databinding.ActivityMainBinding
@@ -40,6 +42,7 @@ class MainActivity : AppCompatActivity() {
     private var imageUri: Uri? = null
     private var imageCapture: ImageCapture? = null
     private var cameraSel = CameraSelector.DEFAULT_BACK_CAMERA
+    private var camera: Camera? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,6 +94,21 @@ class MainActivity : AppCompatActivity() {
             else if (cameraSel == CameraSelector.DEFAULT_BACK_CAMERA) { cameraSel = CameraSelector.DEFAULT_FRONT_CAMERA }
             startCamera(cameraSel)
         }
+//    https://stackoverflow.com/questions/72339792/how-to-implement-zoom-with-seekbar-on-camerax
+//    https://github.com/Pinkal7600/camera-samples/blob/master/CameraXBasic/app/src/main/java/com/android/example/cameraxbasic/fragments/CameraFragment.kt
+        viewBinding.zoomSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(
+                seekBar: SeekBar?,
+                progress: Int,
+                fromUser: Boolean
+            ) {
+                camera!!.cameraControl.setLinearZoom(progress / 100.toFloat())
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
 
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
@@ -156,7 +174,7 @@ class MainActivity : AppCompatActivity() {
                 cameraProvider.unbindAll()
 
                 // Bind use cases to camera
-                cameraProvider.bindToLifecycle(
+                camera = cameraProvider.bindToLifecycle(
                     this, cameraSelector, preview, imageCapture)
 
             } catch(exc: Exception) {
@@ -251,4 +269,31 @@ class MainActivity : AppCompatActivity() {
             }
         )
     }
+
+////    https://stackoverflow.com/questions/72339792/how-to-implement-zoom-with-seekbar-on-camerax
+//       private fun updateCameraUi(){
+//        val cameraSelector = cameraSelector
+//        val preview = Preview.Builder().build().also{
+//            it.setSurfaceProvider(viewBinding.viewFinder.surfaceProvider)
+//        }
+//        val cameraProvider = cameraProviderFuture.get()
+//        val camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture)
+//        val cameraControl = camera.cameraControl
+//        val cameraInfo = camera.cameraInfo
+//        val currentZoomRatio = cameraInfo.zoomState.value?.zoomRatio
+//
+//        viewBinding.zoomSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+//            override fun onProgressChanged(
+//                seekBar: SeekBar?,
+//                progress: Int,
+//                fromUser: Boolean
+//            ) {
+//                cameraControl.setLinearZoom(progress / 100.toFloat())
+//            }
+//
+//            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+//
+//            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+//        })
+//    }
 }

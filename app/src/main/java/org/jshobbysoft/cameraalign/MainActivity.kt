@@ -32,6 +32,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.Camera
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
+import androidx.exifinterface.media.ExifInterface
 import org.jshobbysoft.cameraalign.databinding.ActivityMainBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -128,6 +129,22 @@ class MainActivity : AppCompatActivity() {
                 with(sharedPref.edit()) {
                     putString("background_uri_key", imageUri.toString())
                     apply()
+                }
+//                  "rw" for read-and-write.
+//                  "rwt" for truncating or overwriting existing file contents.
+                val readOnlyMode = "r"
+                contentResolver.openFileDescriptor(imageUri!!
+                    , readOnlyMode).use { pfd ->
+//                  Perform operations on "pfd".
+//                  https://www.geeksforgeeks.org/what-is-exifinterface-in-android/
+                    try {
+                        val gfgExif = ExifInterface(pfd!!.fileDescriptor)
+                        val zoomStateString = gfgExif.getAttribute(ExifInterface.TAG_DIGITAL_ZOOM_RATIO)
+                        viewBinding.zoomSeekBar.progress = zoomStateString!!.toFloat().toInt()
+                        camera!!.cameraControl.setLinearZoom(zoomStateString.toFloat() / 100.toFloat())
+                    } catch (e: Exception) {
+                        println("Error: $e")
+                    }
                 }
             }
         }
@@ -261,7 +278,27 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun
-                        onImageSaved(output: ImageCapture.OutputFileResults){
+                        onImageSaved(output: ImageCapture.OutputFileResults) {
+//                  save zoom in exif data
+//                  https://developer.android.com/training/data-storage/shared/media
+//                  Open a specific media item using ParcelFileDescriptor.
+                    val resolver = applicationContext.contentResolver
+//                  "rw" for read-and-write.
+//                  "rwt" for truncating or overwriting existing file contents.
+                    val readOnlyMode = "rw"
+                    resolver.openFileDescriptor(output.savedUri!!
+                        , readOnlyMode).use { pfd ->
+                        // Perform operations on "pfd".
+//                  https://www.geeksforgeeks.org/what-is-exifinterface-in-android/
+                        val zS = viewBinding.zoomSeekBar.progress
+                        val gfgExif = ExifInterface(pfd!!.fileDescriptor)
+                        gfgExif.setAttribute(
+                            ExifInterface.TAG_DIGITAL_ZOOM_RATIO,
+                            zS.toString()
+                        )
+                        gfgExif.saveAttributes()
+                    }
+
                     val msg = "Photo capture succeeded: ${output.savedUri}"
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
 //                    Log.d(TAG, msg)
@@ -269,31 +306,4 @@ class MainActivity : AppCompatActivity() {
             }
         )
     }
-
-////    https://stackoverflow.com/questions/72339792/how-to-implement-zoom-with-seekbar-on-camerax
-//       private fun updateCameraUi(){
-//        val cameraSelector = cameraSelector
-//        val preview = Preview.Builder().build().also{
-//            it.setSurfaceProvider(viewBinding.viewFinder.surfaceProvider)
-//        }
-//        val cameraProvider = cameraProviderFuture.get()
-//        val camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture)
-//        val cameraControl = camera.cameraControl
-//        val cameraInfo = camera.cameraInfo
-//        val currentZoomRatio = cameraInfo.zoomState.value?.zoomRatio
-//
-//        viewBinding.zoomSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-//            override fun onProgressChanged(
-//                seekBar: SeekBar?,
-//                progress: Int,
-//                fromUser: Boolean
-//            ) {
-//                cameraControl.setLinearZoom(progress / 100.toFloat())
-//            }
-//
-//            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-//
-//            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-//        })
-//    }
 }

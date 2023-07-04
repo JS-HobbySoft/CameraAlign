@@ -1,0 +1,1 @@
+Version 2.0 adds a seekbar in the image preview to adjust the camera zoom.  When saving an image, the app will also record the zoom level in the EXIF data and if an image with zoom EXIF data is loaded the image preview zoom level will be set to the zoom of the saved image.   

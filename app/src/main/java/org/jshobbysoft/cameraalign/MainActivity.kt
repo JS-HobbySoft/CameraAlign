@@ -68,6 +68,20 @@ class MainActivity : AppCompatActivity() {
         } else {
             val backgroundUri = Uri.parse(backgroundUriString)
             viewBinding.basisImage.setImageURI(backgroundUri)
+            val readOnlyMode = "r"
+            contentResolver.openFileDescriptor(backgroundUri!!
+                , readOnlyMode).use { pfd ->
+//                  Perform operations on "pfd".
+//                  https://www.geeksforgeeks.org/what-is-exifinterface-in-android/
+                try {
+                    val gfgExif = ExifInterface(pfd!!.fileDescriptor)
+                    val zoomStateString = gfgExif.getAttribute(ExifInterface.TAG_DIGITAL_ZOOM_RATIO)
+                    viewBinding.zoomSeekBar.progress = zoomStateString!!.toFloat().toInt()
+                    camera!!.cameraControl.setLinearZoom(zoomStateString.toFloat() / 100.toFloat())
+                } catch (e: Exception) {
+                    println("Error: $e")
+                }
+            }
         }
 
         //      set image transparency using value from SharedPrefs

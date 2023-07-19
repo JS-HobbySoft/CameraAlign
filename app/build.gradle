@@ -15,8 +15,8 @@ android {
         applicationId "org.jshobbysoft.cameraalign"
         minSdk 24
         targetSdk 33
-        versionCode 4
-        versionName "2.0"
+        versionCode 5
+        versionName "2.1"
         signingConfig signingConfigs.debug
     }
 

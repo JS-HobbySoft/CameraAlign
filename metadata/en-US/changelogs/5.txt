@@ -1,0 +1,1 @@
+When taking a photo, show device path and file name.  Change from Toast to Snackbar to show path and name.  Increase number of lines in snackbar to allow full path and name to be seen.  

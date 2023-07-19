@@ -11,23 +11,22 @@ import android.Manifest
 import android.app.Activity
 import android.content.ContentUris
 import android.content.ContentValues
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
-import android.database.DatabaseUtils
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import android.widget.SeekBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -40,7 +39,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.exifinterface.media.ExifInterface
-//import com.ianhanniballake.localstorage.LocalStorageProvider
+import com.google.android.material.snackbar.Snackbar
 import org.jshobbysoft.cameraalign.databinding.ActivityMainBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -80,8 +79,9 @@ class MainActivity : AppCompatActivity() {
             val backgroundUri = Uri.parse(backgroundUriString)
             viewBinding.basisImage.setImageURI(backgroundUri)
             val readOnlyMode = "r"
-            contentResolver.openFileDescriptor(backgroundUri!!
-                , readOnlyMode).use { pfd ->
+            contentResolver.openFileDescriptor(
+                backgroundUri!!, readOnlyMode
+            ).use { pfd ->
 //                  Perform operations on "pfd".
 //                  https://www.geeksforgeeks.org/what-is-exifinterface-in-android/
                 try {
@@ -96,9 +96,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         //      set image transparency using value from SharedPrefs
-        val transparencyValue = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
-            .getString("textTransparencyKey", "125")!!.toFloat()
-        val transparencyValueFloat = transparencyValue/255
+        val transparencyValue =
+            androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+                .getString("textTransparencyKey", "125")!!.toFloat()
+        val transparencyValueFloat = transparencyValue / 255
         viewBinding.basisImage.alpha = transparencyValueFloat
 
         viewBinding.buttonLoadPicture.setOnClickListener {
@@ -112,17 +113,21 @@ class MainActivity : AppCompatActivity() {
 
         // Set up image rotation button
         viewBinding.imageRotateButton.setOnClickListener {
-            viewBinding.basisImage.rotation = viewBinding.basisImage.rotation+90
+            viewBinding.basisImage.rotation = viewBinding.basisImage.rotation + 90
         }
 
         viewBinding.cameraFlipButton.setOnClickListener {
-            if (cameraSel == CameraSelector.DEFAULT_FRONT_CAMERA) { cameraSel = CameraSelector.DEFAULT_BACK_CAMERA }
-            else if (cameraSel == CameraSelector.DEFAULT_BACK_CAMERA) { cameraSel = CameraSelector.DEFAULT_FRONT_CAMERA }
+            if (cameraSel == CameraSelector.DEFAULT_FRONT_CAMERA) {
+                cameraSel = CameraSelector.DEFAULT_BACK_CAMERA
+            } else if (cameraSel == CameraSelector.DEFAULT_BACK_CAMERA) {
+                cameraSel = CameraSelector.DEFAULT_FRONT_CAMERA
+            }
             startCamera(cameraSel)
         }
 //    https://stackoverflow.com/questions/72339792/how-to-implement-zoom-with-seekbar-on-camerax
 //    https://github.com/Pinkal7600/camera-samples/blob/master/CameraXBasic/app/src/main/java/com/android/example/cameraxbasic/fragments/CameraFragment.kt
-        viewBinding.zoomSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        viewBinding.zoomSeekBar.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(
                 seekBar: SeekBar?,
                 progress: Int,
@@ -158,13 +163,15 @@ class MainActivity : AppCompatActivity() {
 //                  "rw" for read-and-write.
 //                  "rwt" for truncating or overwriting existing file contents.
                 val readOnlyMode = "r"
-                contentResolver.openFileDescriptor(imageUri!!
-                    , readOnlyMode).use { pfd ->
+                contentResolver.openFileDescriptor(
+                    imageUri!!, readOnlyMode
+                ).use { pfd ->
 //                  Perform operations on "pfd".
 //                  https://www.geeksforgeeks.org/what-is-exifinterface-in-android/
                     try {
                         val gfgExif = ExifInterface(pfd!!.fileDescriptor)
-                        val zoomStateString = gfgExif.getAttribute(ExifInterface.TAG_DIGITAL_ZOOM_RATIO)
+                        val zoomStateString =
+                            gfgExif.getAttribute(ExifInterface.TAG_DIGITAL_ZOOM_RATIO)
                         viewBinding.zoomSeekBar.progress = zoomStateString!!.toFloat().toInt()
                         camera!!.cameraControl.setLinearZoom(zoomStateString.toFloat() / 100.toFloat())
                     } catch (e: Exception) {
@@ -187,11 +194,12 @@ class MainActivity : AppCompatActivity() {
                 startActivity(settingsIntent)
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    private fun startCamera(cameraSelector:CameraSelector) {
+    private fun startCamera(cameraSelector: CameraSelector) {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
         cameraProviderFuture.addListener({
@@ -217,9 +225,10 @@ class MainActivity : AppCompatActivity() {
 
                 // Bind use cases to camera
                 camera = cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, imageCapture)
+                    this, cameraSelector, preview, imageCapture
+                )
 
-            } catch(exc: Exception) {
+            } catch (exc: Exception) {
 //                Log.e(TAG, "Use case binding failed", exc)
             }
 
@@ -238,7 +247,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-//        private const val TAG = "CameraXApp"
+        //        private const val TAG = "CameraXApp"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS =
@@ -280,16 +289,18 @@ class MainActivity : AppCompatActivity() {
         val contentValues = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, name)
             put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-            if(Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
                 put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/CameraX-Image")
             }
         }
 
         // Create output options object which contains file + metadata
         val outputOptions = ImageCapture.OutputFileOptions
-            .Builder(contentResolver,
+            .Builder(
+                contentResolver,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                contentValues)
+                contentValues
+            )
             .build()
 
         // Set up image capture listener, which is triggered after photo has
@@ -311,8 +322,9 @@ class MainActivity : AppCompatActivity() {
 //                  "rw" for read-and-write.
 //                  "rwt" for truncating or overwriting existing file contents.
                     val readOnlyMode = "rw"
-                    resolver.openFileDescriptor(output.savedUri!!
-                        , readOnlyMode).use { pfd ->
+                    resolver.openFileDescriptor(
+                        output.savedUri!!, readOnlyMode
+                    ).use { pfd ->
                         // Perform operations on "pfd".
 //                  https://www.geeksforgeeks.org/what-is-exifinterface-in-android/
                         val zS = viewBinding.zoomSeekBar.progress
@@ -326,40 +338,24 @@ class MainActivity : AppCompatActivity() {
 
                     val sUri = output.savedUri!!
                     val photoPath = getPath(applicationContext, sUri)
-                    val msg = "Photo capture succeeded: ${photoPath}"
-                    Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-//                    Log.d(TAG, msg)
+                    val msg = "Photo capture succeeded: $photoPath"
+                    val sb = Snackbar.make(
+                        viewBinding.root,
+                        msg,
+                        Snackbar.LENGTH_LONG
+                    )
+                    val sbView: View = sb.view
+                    val textView: TextView =
+                        sbView.findViewById(com.google.android.material.R.id.snackbar_text)
+                    textView.maxLines = 4
+                    sb.show()
                 }
             }
         )
     }
 
-//    https://github.com/iPaulPro/aFileChooser/blob/master/aFileChooser/src/com/ipaulpro/afilechooser/utils/FileUtils.java
-    /**
-     * Get a file path from a Uri. This will get the the path for Storage Access
-     * Framework Documents, as well as the _data field for the MediaStore and
-     * other file-based ContentProviders.<br></br>
-     * <br></br>
-     * Callers should check whether the path is local before assuming it
-     * represents a local file.
-     *
-     * @author paulburke
-     */
-
-    private val DEBUG = false
+    //    https://github.com/iPaulPro/aFileChooser/blob/master/aFileChooser/src/com/ipaulpro/afilechooser/utils/FileUtils.java
     fun getPath(context: Context?, uri: Uri): String? {
-        if (DEBUG) Log.d(
-            TAG + " File -",
-            "Authority: " + uri.authority +
-                    ", Fragment: " + uri.fragment +
-                    ", Port: " + uri.port +
-                    ", Query: " + uri.query +
-                    ", Scheme: " + uri.scheme +
-                    ", Host: " + uri.host +
-                    ", Segments: " + uri.pathSegments.toString()
-        )
-//        val isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
-
         // DocumentProvider
         if (DocumentsContract.isDocumentUri(context, uri)) {
             if (isExternalStorageDocument(uri)) {
@@ -414,44 +410,21 @@ class MainActivity : AppCompatActivity() {
         return null
     }
 
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is ExternalStorageProvider.
-     * @author paulburke
-     */
     private fun isExternalStorageDocument(uri: Uri): Boolean {
         return "com.android.externalstorage.documents" == uri.authority
     }
 
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is DownloadsProvider.
-     * @author paulburke
-     */
     private fun isDownloadsDocument(uri: Uri): Boolean {
         return "com.android.providers.downloads.documents" == uri.authority
     }
 
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is MediaProvider.
-     * @author paulburke
-     */
     private fun isMediaDocument(uri: Uri): Boolean {
         return "com.android.providers.media.documents" == uri.authority
     }
 
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is Google Photos.
-     */
     private fun isGooglePhotosUri(uri: Uri): Boolean {
         return "com.google.android.apps.photos.content" == uri.authority
     }
-
-//    private fun isLocalStorageDocument(uri: Uri): Boolean {
-//        return LocalStorageProvider.AUTHORITY.equals(uri.authority)
-//    }
 
     private fun getDataColumn(
         context: Context, uri: Uri?, selection: String?,
@@ -468,9 +441,8 @@ class MainActivity : AppCompatActivity() {
                 null
             )
             if (cursor != null && cursor.moveToFirst()) {
-                if (DEBUG) DatabaseUtils.dumpCursor(cursor)
-                val column_index = cursor.getColumnIndexOrThrow(column)
-                return cursor.getString(column_index)
+                val columnIndex = cursor.getColumnIndexOrThrow(column)
+                return cursor.getString(columnIndex)
             }
         } finally {
             cursor?.close()

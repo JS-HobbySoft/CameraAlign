@@ -1,0 +1,2 @@
+Added capability to pick a color to be made transparent for green screen effects
+

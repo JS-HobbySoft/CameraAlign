@@ -2,11 +2,13 @@ This app creates a semitransparent overlay of a picture on top of the phone's ca
 
 Currently I use this app as a quick way to align the antennas for my software defined radios with a fixed point, but there can be other uses as well.  
 
+This app also has the capability to select a certain color to be transparent for "green screen" style overlays.  The transparency can be applied to the image or the live camera preview.  
+
 This app has no ads or in-app purchases and collects no data.  
 
 Source code is available on GitHub: JS-HobbySoft/CameraAlign  
 
-The source code is licensed under GPL-3.0-or-later.  
+The source code is licensed under AGPL-3.0-or-later.  
 
 The app icon was created with Stable Diffusion.
 

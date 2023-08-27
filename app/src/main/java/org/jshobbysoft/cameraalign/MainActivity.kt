@@ -8,6 +8,7 @@ package org.jshobbysoft.cameraalign
 //import android.util.Log
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentUris
 import android.content.ContentValues
@@ -15,6 +16,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -24,6 +27,7 @@ import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
 import android.widget.SeekBar
 import android.widget.TextView
@@ -32,17 +36,19 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.exifinterface.media.ExifInterface
 import com.google.android.material.snackbar.Snackbar
 import org.jshobbysoft.cameraalign.databinding.ActivityMainBinding
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -54,16 +60,25 @@ class MainActivity : AppCompatActivity() {
     private var imageCapture: ImageCapture? = null
     private var cameraSel = CameraSelector.DEFAULT_BACK_CAMERA
     private var camera: Camera? = null
+    private var touchPixel: Int? = null
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
+        val useGreenScreen =
+            androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean("greenScreenEffectKey", false)
+        val greenScreenEffectTarget =
+            androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+                .getString("greenScreenEffectTargetKey", "transparentColorPreview")
+
         // trivial change to test Git commits
         // Request camera permissions
         if (allPermissionsGranted()) {
-            startCamera(cameraSel)
+            startCamera(cameraSel, greenScreenEffectTarget)
         } else {
             ActivityCompat.requestPermissions(
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
@@ -102,6 +117,63 @@ class MainActivity : AppCompatActivity() {
         val transparencyValueFloat = transparencyValue / 255
         viewBinding.basisImage.alpha = transparencyValueFloat
 
+        if (useGreenScreen) {
+            if (greenScreenEffectTarget == "transparentColorPreview") {
+                viewBinding.viewFinder.alpha = 0f
+            } else if (greenScreenEffectTarget == "transparentColorImage") {
+                viewBinding.basisImage.alpha = 0f
+
+                val rawImageDrawable = viewBinding.basisImage.drawable
+                val rawImageBitmap = rawImageDrawable.toBitmap()
+                val transparentImageBitmap = toTransparency(rawImageBitmap)
+                viewBinding.transparentView.setImageBitmap(transparentImageBitmap)
+            }
+
+            //        https://stackoverflow.com/questions/57139275/how-to-get-colour-of-touched-area-in-canvas-android
+            viewBinding.transparentView.setOnTouchListener { _, event ->
+//                https://stackoverflow.com/questions/47170075/kotlin-ontouchlistener-called-but-it-does-not-override-performclick
+                when (event.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        var red: Int
+                        var green: Int
+                        var blue: Int
+                        val drawable = viewBinding.transparentView.drawable
+                        val bitmap = drawable.toBitmap()
+                        touchPixel = bitmap.getPixel(event.x.toInt(), event.y.toInt())
+//            https://stackoverflow.com/questions/46701042/kotlin-smart-cast-is-impossible-because-the-property-could-have-been-changed-b
+                        touchPixel.let {
+                            red = Color.red(it!!)
+                            green = Color.green(it)
+                            blue = Color.blue(it)
+                        }
+
+                        androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+                            .edit().putString("textRedKey", red.toString()).apply()
+                        androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+                            .edit().putString("textGreenKey", green.toString()).apply()
+                        androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+                            .edit().putString("textBlueKey", blue.toString()).apply()
+
+                        Toast.makeText(
+                            this,
+                            "Chosen color was red: $red / green: $green / blue: $blue",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        val rawImageDrawable = viewBinding.basisImage.drawable
+                        val rawImageBitmap = rawImageDrawable.toBitmap()
+                        val transparentImageBitmap = toTransparency(rawImageBitmap)
+                        viewBinding.transparentView.setImageBitmap(transparentImageBitmap)
+                    }
+                }
+                true
+            }
+        } else {
+            viewBinding.viewFinder.visibility = View.VISIBLE
+            viewBinding.basisImage.visibility = View.VISIBLE
+            viewBinding.transparentView.visibility = View.INVISIBLE
+        }
+
         viewBinding.buttonLoadPicture.setOnClickListener {
             val gallery =
                 Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
@@ -122,7 +194,7 @@ class MainActivity : AppCompatActivity() {
             } else if (cameraSel == CameraSelector.DEFAULT_BACK_CAMERA) {
                 cameraSel = CameraSelector.DEFAULT_FRONT_CAMERA
             }
-            startCamera(cameraSel)
+            startCamera(cameraSel, greenScreenEffectTarget)
         }
 //    https://stackoverflow.com/questions/72339792/how-to-implement-zoom-with-seekbar-on-camerax
 //    https://github.com/Pinkal7600/camera-samples/blob/master/CameraXBasic/app/src/main/java/com/android/example/cameraxbasic/fragments/CameraFragment.kt
@@ -199,7 +271,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun startCamera(cameraSelector: CameraSelector) {
+    private fun startCamera(cameraSelector: CameraSelector, gSET: String?) {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
         cameraProviderFuture.addListener({
@@ -213,23 +285,47 @@ class MainActivity : AppCompatActivity() {
                     it.setSurfaceProvider(viewBinding.viewFinder.surfaceProvider)
                 }
 
-            imageCapture = ImageCapture.Builder().build()
+            if (gSET == "transparentColorPreview") {
+                val imageAnalysis = ImageAnalysis.Builder()
+                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+//                .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_YUV_420_888)
+                    .build()
 
-            // Select back camera as a default
-//            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-//            val cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
+                imageAnalysis.setAnalyzer(cameraExecutor) { imageProxy ->
+//                val rotationDegrees = imageProxy.imageInfo.rotationDegrees
+                    runOnUiThread {
+                        val rawPreview = viewBinding.viewFinder.bitmap
+                        val bitmapTransparency = toTransparency(rawPreview)
+                        viewBinding.transparentView.setImageBitmap(bitmapTransparency)
+                    }
+                    imageProxy.close()
+                }
+                imageCapture = ImageCapture.Builder().build()
+                try {
+                    // Unbind use cases before rebinding
+                    cameraProvider.unbindAll()
 
-            try {
-                // Unbind use cases before rebinding
-                cameraProvider.unbindAll()
-
-                // Bind use cases to camera
-                camera = cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, imageCapture
-                )
-
-            } catch (exc: Exception) {
+                    // Bind use cases to camera
+                    camera = cameraProvider.bindToLifecycle(
+                        this, cameraSelector, preview, imageCapture, imageAnalysis
+                    )
+                } catch (exc: Exception) {
 //                Log.e(TAG, "Use case binding failed", exc)
+                }
+            } else {
+                imageCapture = ImageCapture.Builder().build()
+
+                try {
+                    // Unbind use cases before rebinding
+                    cameraProvider.unbindAll()
+
+                    // Bind use cases to camera
+                    camera = cameraProvider.bindToLifecycle(
+                        this, cameraSelector, preview, imageCapture
+                    )
+                } catch (exc: Exception) {
+//                Log.e(TAG, "Use case binding failed", exc)
+                }
             }
 
         }, ContextCompat.getMainExecutor(this))
@@ -261,13 +357,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>, grantResults:
-        IntArray
+        requestCode: Int, permissions: Array<String>, grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        val greenScreenEffectTarget =
+            androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+                .getString("greenScreenEffectTargetKey", "transparentColorPreview")
+
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (allPermissionsGranted()) {
-                startCamera(cameraSel)
+                startCamera(cameraSel, greenScreenEffectTarget)
             } else {
                 Toast.makeText(
                     this,
@@ -450,5 +549,49 @@ class MainActivity : AppCompatActivity() {
         return null
     }
 
+    //    https://github.com/Faisal-FS/CameraX-In-Java/blob/real_time_grayscale/app/src/main/java/com/palfs/cameraxinjava/MainActivity.java
+    private fun toTransparency(bmpOriginal: Bitmap?): Bitmap {
+        val width: Int = bmpOriginal?.width ?: 100
+        val height: Int = bmpOriginal?.height ?: 100
 
+        val transparentRed =
+            androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+                .getString("textRedKey", "0")?.toInt()
+        val transparentGreen =
+            androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+                .getString("textGreenKey", "0")?.toInt()
+        val transparentBlue =
+            androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+                .getString("textBlueKey", "0")?.toInt()
+
+//        https://stackoverflow.com/questions/7237915/replace-black-color-in-bitmap-with-red
+        val bmpTransparent = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+//        https://stackoverflow.com/questions/20347591/changing-the-pixel-color-in-android
+        val allPixels = IntArray(height * width)
+        bmpOriginal?.getPixels(allPixels, 0, width, 0, 0, width, height)
+        allPixels.forEachIndexed { index, i ->
+            val red = Color.red(i)
+            val green = Color.green(i)
+            val blue = Color.blue(i)
+            if (red == transparentRed && green == transparentGreen && blue == transparentBlue) {
+                allPixels[index] = Color.argb(0x00, red, green, blue)
+            }
+        }
+        bmpTransparent.setPixels(allPixels, 0, width, 0, 0, width, height)
+        return bmpTransparent
+
+        /*
+                val bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+                val c = Canvas(bmpGrayscale)
+                val paint = Paint()
+                val cm = ColorMatrix()
+                cm.setSaturation(0f)
+                val f = ColorMatrixColorFilter(cm)
+                paint.colorFilter = f
+                c.drawColor(0, PorterDuff.Mode.CLEAR)
+                paint.alpha = 0
+                c.drawBitmap(bmpOriginal, 0f, 0f, paint)
+                return bmpGrayscale
+        */
+    }
 }

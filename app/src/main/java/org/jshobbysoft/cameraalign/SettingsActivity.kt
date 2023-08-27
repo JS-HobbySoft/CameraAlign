@@ -45,6 +45,51 @@ class SettingsActivity : AppCompatActivity() {
                         false
                     }
                 }
+
+            val pref3 : EditTextPreference? = findPreference("textRedKey")
+            pref3?.setOnBindEditTextListener {
+                    editText -> editText.inputType = InputType.TYPE_CLASS_NUMBER
+            }
+            pref3?.onPreferenceChangeListener =
+                Preference.OnPreferenceChangeListener { _, newValue ->
+                    val result = newValue?.toString()?.toInt()
+                    if (result in 0..255) {
+                        true
+                    } else {
+                        Toast.makeText(requireActivity(),"Color value must be between 0-255",Toast.LENGTH_LONG).show()
+                        false
+                    }
+                }
+
+            val pref4 : EditTextPreference? = findPreference("textGreenKey")
+            pref4?.setOnBindEditTextListener {
+                    editText -> editText.inputType = InputType.TYPE_CLASS_NUMBER
+            }
+            pref4?.onPreferenceChangeListener =
+                Preference.OnPreferenceChangeListener { _, newValue ->
+                    val result = newValue?.toString()?.toInt()
+                    if (result in 0..255) {
+                        true
+                    } else {
+                        Toast.makeText(requireActivity(),"Color value must be between 0-255",Toast.LENGTH_LONG).show()
+                        false
+                    }
+                }
+
+            val pref5 : EditTextPreference? = findPreference("textBlueKey")
+            pref5?.setOnBindEditTextListener {
+                    editText -> editText.inputType = InputType.TYPE_CLASS_NUMBER
+            }
+            pref5?.onPreferenceChangeListener =
+                Preference.OnPreferenceChangeListener { _, newValue ->
+                    val result = newValue?.toString()?.toInt()
+                    if (result in 0..255) {
+                        true
+                    } else {
+                        Toast.makeText(requireActivity(),"Color value must be between 0-255",Toast.LENGTH_LONG).show()
+                        false
+                    }
+                }
         }
     }
 }

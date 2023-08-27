@@ -11,6 +11,19 @@
         android:maxLines="1"
         app:useSimpleSummaryProvider="true"/>
 
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="greenScreenEffectKey"
+        android:title="Use transparency for a specific color \n(e.g., green screen effect)"/>
+
+    <ListPreference
+        app:key="greenScreenEffectTargetKey"
+        app:title="Apply color transparency to live preview or image"
+        app:entries="@array/greenScreenEntries"
+        app:entryValues="@array/greenScreenValues"
+        app:defaultValue="transparentColorPreview"
+        app:useSimpleSummaryProvider="true"/>
+
 <!--
     <ListPreference
         app:defaultValue="center_inside"
@@ -20,5 +33,32 @@
         app:title="@string/imageScaleTypeString"
         app:useSimpleSummaryProvider="true" />
 -->
+
+    <EditTextPreference
+        android:defaultValue="0"
+        android:key="textRedKey"
+        android:title="Enter red value of color for transparency (0-255)"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:maxLines="1"
+        app:useSimpleSummaryProvider="true"/>
+
+    <EditTextPreference
+        android:defaultValue="0"
+        android:key="textGreenKey"
+        android:title="Enter green value of color for transparency (0-255)"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:maxLines="1"
+        app:useSimpleSummaryProvider="true"/>
+
+    <EditTextPreference
+        android:defaultValue="0"
+        android:key="textBlueKey"
+        android:title="Enter blue value of color for transparency (0-255)"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:maxLines="1"
+        app:useSimpleSummaryProvider="true"/>
 
 </PreferenceScreen>

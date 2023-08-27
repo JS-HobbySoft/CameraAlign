@@ -14,4 +14,16 @@
     <string name="etHint">0.5</string>
     <string name="capture_image_string">Take image</string>
     <string name="front_back_camera_string">Flip camera</string>
+    <string name="transparent_image">transparent image</string>
+    
+    <string-array name="greenScreenEntries">
+        <item>Live Preview</item>
+        <item>Image</item>
+    </string-array>
+
+    <string-array name="greenScreenValues">
+        <item>transparentColorPreview</item>
+        <item>transparentColorImage</item>
+    </string-array>
+
 </resources>

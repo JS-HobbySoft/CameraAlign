@@ -120,6 +120,41 @@
         android:text="@string/loadPictureButtonString"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/image_capture_button"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/vertical_center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".50" />
+
+    <Button
+        android:id="@+id/image_vflip_button"
+        android:layout_width="@dimen/buttonWidth"
+        android:layout_height="@dimen/buttonHeight"
+        android:layout_marginStart="@dimen/marginValue"
+        android:layout_marginEnd="@dimen/marginValue"
+        android:layout_marginBottom="@dimen/marginValueBottom"
+        android:layout_marginTop="@dimen/marginValueBottom"
+        android:elevation="2dp"
+        android:text="@string/image_v_flip"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/image_hflip_button"/>
+
+    <Button
+        android:id="@+id/image_hflip_button"
+        android:layout_width="@dimen/buttonWidth"
+        android:layout_height="@dimen/buttonHeight"
+        android:layout_marginStart="@dimen/marginValue"
+        android:layout_marginEnd="@dimen/marginValue"
+        android:layout_marginBottom="@dimen/marginValueBottom"
+        android:layout_marginTop="@dimen/marginValueBottom"
+        android:elevation="2dp"
+        android:text="@string/image_h_flip"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/image_vflip_button"
         app:layout_constraintEnd_toStartOf="@id/image_rotate_button"/>
 
     <Button
@@ -129,17 +164,11 @@
         android:layout_marginStart="@dimen/marginValue"
         android:layout_marginEnd="@dimen/marginValue"
         android:layout_marginBottom="@dimen/marginValueBottom"
+        android:layout_marginTop="@dimen/marginValueBottom"
         android:elevation="2dp"
         android:text="@string/rotate_image_string"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/buttonLoadPicture"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/image_hflip_button"
         app:layout_constraintEnd_toEndOf="parent"/>
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/vertical_center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent=".50" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,7 +15,9 @@
     <string name="capture_image_string">Take image</string>
     <string name="front_back_camera_string">Flip camera</string>
     <string name="transparent_image">transparent image</string>
-    
+    <string name="image_v_flip">Image V-flip</string>
+    <string name="image_h_flip">Image H-flip</string>
+
     <string-array name="greenScreenEntries">
         <item>Live Preview</item>
         <item>Image</item>

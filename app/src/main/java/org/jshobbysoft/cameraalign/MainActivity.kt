@@ -61,6 +61,8 @@ class MainActivity : AppCompatActivity() {
     private var cameraSel = CameraSelector.DEFAULT_BACK_CAMERA
     private var camera: Camera? = null
     private var touchPixel: Int? = null
+    private var vflipState = 1
+    private var hflipState = 1
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -186,6 +188,28 @@ class MainActivity : AppCompatActivity() {
         // Set up image rotation button
         viewBinding.imageRotateButton.setOnClickListener {
             viewBinding.basisImage.rotation = viewBinding.basisImage.rotation + 90
+        }
+
+        // Set up image vertical flip button
+        viewBinding.imageVflipButton.setOnClickListener {
+            if (vflipState == 1) {
+                viewBinding.basisImage.scaleX = -1f
+                vflipState = -1
+            } else if (vflipState == -1) {
+                viewBinding.basisImage.scaleX = 1f
+                vflipState = 1
+            }
+        }
+
+        // Set up image horizontal flip button
+        viewBinding.imageHflipButton.setOnClickListener {
+            if (hflipState == 1) {
+                viewBinding.basisImage.scaleY = -1f
+                hflipState = -1
+            } else if (hflipState == -1) {
+                viewBinding.basisImage.scaleY = 1f
+                hflipState = 1
+            }
         }
 
         viewBinding.cameraFlipButton.setOnClickListener {

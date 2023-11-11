@@ -1,0 +1,2 @@
+Add ability to horizontally and vertically flip the image
+

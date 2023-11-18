@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="take_photo">照相</string>
+    <string name="start_capture">开始捕捉</string>
+    <string name="stop_capture">停止捕捉</string>
+    <string name="imageViewDescription">要对比的图像</string>
+    <string name="loadPictureButtonString">加载图像</string>
+    <string name="change_transparency_string">更改透明度</string>
+    <string name="settings_menu_name">设置</string>
+    <string name="textTransparencyString">输入图像透明度\n0=透明 / 255=不透明</string>
+    <string name="toastBadTransparency">透明度必须在0（透明）到255（不透明）之间</string>
+    <string name="rotate_image_string">翻转图像</string>
+    <string name="etTransLabel">输入透明设置值\n0=透明 1=不透明</string>
+    <string name="etHint">0.5</string>
+    <string name="capture_image_string">拍摄画面</string>
+    <string name="front_back_camera_string">切换摄像头</string>
+    <string name="transparent_image">透明图像</string>
+    <string name="image_v_flip">垂直翻转</string>
+    <string name="image_h_flip">水平翻转</string>
+</resources>

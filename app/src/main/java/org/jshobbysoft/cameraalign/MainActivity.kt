@@ -93,22 +93,32 @@ class MainActivity : AppCompatActivity() {
         if (backgroundUriString == "") {
             viewBinding.basisImage.setImageResource(R.drawable.ic_launcher_background)
         } else {
-            val backgroundUri = Uri.parse(backgroundUriString)
-            viewBinding.basisImage.setImageURI(backgroundUri)
-            val readOnlyMode = "r"
-            contentResolver.openFileDescriptor(
-                backgroundUri!!, readOnlyMode
-            ).use { pfd ->
+            try {
+                val backgroundUri = Uri.parse(backgroundUriString)
+                viewBinding.basisImage.setImageURI(backgroundUri)
+                val readOnlyMode = "r"
+                contentResolver.openFileDescriptor(
+                    backgroundUri!!, readOnlyMode
+                ).use { pfd ->
 //                  Perform operations on "pfd".
 //                  https://www.geeksforgeeks.org/what-is-exifinterface-in-android/
-                try {
-                    val gfgExif = ExifInterface(pfd!!.fileDescriptor)
-                    val zoomStateString = gfgExif.getAttribute(ExifInterface.TAG_DIGITAL_ZOOM_RATIO)
-                    viewBinding.zoomSeekBar.progress = zoomStateString!!.toFloat().toInt()
-                    camera!!.cameraControl.setLinearZoom(zoomStateString.toFloat() / 100.toFloat())
-                } catch (e: Exception) {
-                    println("Error: $e")
+                    try {
+                        val gfgExif = ExifInterface(pfd!!.fileDescriptor)
+                        val zoomStateString = gfgExif.getAttribute(ExifInterface.TAG_DIGITAL_ZOOM_RATIO)
+                        viewBinding.zoomSeekBar.progress = zoomStateString!!.toFloat().toInt()
+                        camera!!.cameraControl.setLinearZoom(zoomStateString.toFloat() / 100.toFloat())
+                    } catch (e: Exception) {
+                        println("Error: $e")
+                    }
                 }
+            } catch (errorUri: Exception) {
+                viewBinding.basisImage.setImageResource(R.drawable.ic_launcher_background)
+                Toast.makeText(
+                    this,
+                    "Background file does not exist.  Please choose a different file.",
+                    Toast.LENGTH_LONG
+                ).show()
+                println("Error: $errorUri")
             }
         }
 

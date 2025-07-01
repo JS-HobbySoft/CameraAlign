@@ -7,14 +7,14 @@ android.buildTypes.release.ndk.debugSymbolLevel = 'FULL'
 android.defaultConfig.ndk.debugSymbolLevel = 'FULL'
 
 android {
-    compileSdk 35
+    compileSdk 36
 
     ndkVersion '25.1.8937393'
 
     defaultConfig {
         applicationId "org.jshobbysoft.cameraalign"
         minSdk 24
-        targetSdk 35
+        targetSdk 36
         versionCode 9
         versionName "3.2"
         signingConfig signingConfigs.debug

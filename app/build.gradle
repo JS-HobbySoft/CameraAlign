@@ -7,14 +7,14 @@ android.buildTypes.release.ndk.debugSymbolLevel = 'FULL'
 android.defaultConfig.ndk.debugSymbolLevel = 'FULL'
 
 android {
-    compileSdk 34
+    compileSdk 35
 
     ndkVersion '25.1.8937393'
 
     defaultConfig {
         applicationId "org.jshobbysoft.cameraalign"
         minSdk 24
-        targetSdk 34
+        targetSdk 35
         versionCode 9
         versionName "3.2"
         signingConfig signingConfigs.debug
@@ -67,7 +67,6 @@ dependencies {
     implementation "androidx.camera:camera-view:1.4.2"
     implementation "androidx.camera:camera-extensions:1.4.2"
 
-    implementation "androidx.lifecycle:lifecycle-viewmodel:2.9.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.1"
 
     implementation "androidx.exifinterface:exifinterface:1.4.1"

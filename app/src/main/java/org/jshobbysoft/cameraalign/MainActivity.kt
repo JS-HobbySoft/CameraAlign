@@ -477,10 +477,11 @@ class MainActivity : AppCompatActivity() {
                         msg,
                         Snackbar.LENGTH_LONG
                     )
-                    val sbView: View = sb.view
-                    val textView: TextView =
-                        sbView.findViewById(com.google.android.material.R.id.snackbar_text)
-                    textView.maxLines = 4
+//                    val sbView: View = sb.view
+//                    val textView: TextView =
+//                        sbView.findViewById(com.google.android.material.R.id.snackbar_text)
+////                        sbView.findViewById(R.id.)
+//                    textView.maxLines = 4
                     sb.show()
                 }
             }

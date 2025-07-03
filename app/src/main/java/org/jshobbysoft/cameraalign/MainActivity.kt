@@ -53,6 +53,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import androidx.core.net.toUri
 import androidx.core.graphics.createBitmap
+import androidx.core.content.edit
 
 
 class MainActivity : AppCompatActivity() {
@@ -162,11 +163,11 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
-                            .edit().putString("textRedKey", red.toString()).apply()
+                            .edit { putString("textRedKey", red.toString()) }
                         androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
-                            .edit().putString("textGreenKey", green.toString()).apply()
+                            .edit { putString("textGreenKey", green.toString()) }
                         androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
-                            .edit().putString("textBlueKey", blue.toString()).apply()
+                            .edit { putString("textBlueKey", blue.toString()) }
 
                         Toast.makeText(
                             this,
@@ -262,12 +263,15 @@ class MainActivity : AppCompatActivity() {
                         Intent.FLAG_GRANT_WRITE_URI_PERMISSION
                 imageUri?.let { contentResolver.takePersistableUriPermission(it, takeFlags) }
                 viewBinding.basisImage.setImageURI(imageUri)
-                val sharedPref =
+//                val sharedPref =
                     androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
-                with(sharedPref.edit()) {
-                    putString("background_uri_key", imageUri.toString())
-                    apply()
-                }
+//                with(sharedPref.edit()) {
+//                    putString("background_uri_key", imageUri.toString())
+//                    apply()
+//                }
+                androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+                    .edit { putString("background_uri_key", imageUri.toString()) }
+
 //                  "rw" for read-and-write.
 //                  "rwt" for truncating or overwriting existing file contents.
                 val readOnlyMode = "r"
@@ -346,6 +350,7 @@ class MainActivity : AppCompatActivity() {
                         this, cameraSelector, preview, imageCapture, imageAnalysis
                     )
                 } catch (exc: Exception) {
+                    println("Exception: $exc")
 //                Log.e(TAG, "Use case binding failed", exc)
                 }
             } else {
@@ -360,6 +365,7 @@ class MainActivity : AppCompatActivity() {
                         this, cameraSelector, preview, imageCapture
                     )
                 } catch (exc: Exception) {
+                    println("Exception: $exc")
 //                Log.e(TAG, "Use case binding failed", exc)
                 }
             }

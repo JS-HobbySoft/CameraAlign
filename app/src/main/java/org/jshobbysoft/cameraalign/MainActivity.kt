@@ -54,6 +54,7 @@ import java.util.concurrent.Executors
 import androidx.core.net.toUri
 import androidx.core.graphics.createBitmap
 import androidx.core.content.edit
+import androidx.core.graphics.get
 
 
 class MainActivity : AppCompatActivity() {
@@ -154,7 +155,8 @@ class MainActivity : AppCompatActivity() {
                         var blue: Int
                         val drawable = viewBinding.transparentView.drawable
                         val bitmap = drawable.toBitmap()
-                        touchPixel = bitmap.getPixel(event.x.toInt(), event.y.toInt())
+//                        touchPixel = bitmap.getPixel(event.x.toInt(), event.y.toInt())
+                        touchPixel = bitmap[event.x.toInt(), event.y.toInt()]
 //            https://stackoverflow.com/questions/46701042/kotlin-smart-cast-is-impossible-because-the-property-could-have-been-changed-b
                         touchPixel.let {
                             red = Color.red(it!!)

@@ -9,7 +9,7 @@ package org.jshobbysoft.cameraalign
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
+//import android.app.Activity
 import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
@@ -30,7 +30,7 @@ import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.widget.SeekBar
-import android.widget.TextView
+//import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -51,6 +51,8 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import androidx.core.net.toUri
+import androidx.core.graphics.createBitmap
 
 
 class MainActivity : AppCompatActivity() {
@@ -94,7 +96,7 @@ class MainActivity : AppCompatActivity() {
             viewBinding.basisImage.setImageResource(R.drawable.ic_launcher_background)
         } else {
             try {
-                val backgroundUri = Uri.parse(backgroundUriString)
+                val backgroundUri = backgroundUriString?.toUri()
                 viewBinding.basisImage.setImageURI(backgroundUri)
                 val readOnlyMode = "r"
                 contentResolver.openFileDescriptor(
@@ -252,7 +254,7 @@ class MainActivity : AppCompatActivity() {
 
     private var resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
+            if (result.resultCode == RESULT_OK) {
                 val data: Intent? = result.data
                 imageUri = data?.data
                 val contentResolver = applicationContext.contentResolver
@@ -316,7 +318,7 @@ class MainActivity : AppCompatActivity() {
             val preview = Preview.Builder()
                 .build()
                 .also {
-                    it.setSurfaceProvider(viewBinding.viewFinder.surfaceProvider)
+                    it.surfaceProvider = viewBinding.viewFinder.surfaceProvider
                 }
 
             if (gSET == "transparentColorPreview") {
@@ -503,7 +505,7 @@ class MainActivity : AppCompatActivity() {
             } else if (isDownloadsDocument(uri)) {
                 val id = DocumentsContract.getDocumentId(uri)
                 val contentUri = ContentUris.withAppendedId(
-                    Uri.parse("content://downloads/public_downloads"), java.lang.Long.valueOf(id)
+                    "content://downloads/public_downloads".toUri(), java.lang.Long.valueOf(id)
                 )
                 return getDataColumn(applicationContext, contentUri, null, null)
             } else if (isMediaDocument(uri)) {
@@ -600,7 +602,7 @@ class MainActivity : AppCompatActivity() {
                 .getString("textBlueKey", "0")?.toInt()
 
 //        https://stackoverflow.com/questions/7237915/replace-black-color-in-bitmap-with-red
-        val bmpTransparent = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val bmpTransparent = createBitmap(width, height)
 //        https://stackoverflow.com/questions/20347591/changing-the-pixel-color-in-android
         val allPixels = IntArray(height * width)
         bmpOriginal?.getPixels(allPixels, 0, width, 0, 0, width, height)

@@ -55,6 +55,7 @@ import androidx.core.net.toUri
 import androidx.core.graphics.createBitmap
 import androidx.core.content.edit
 import androidx.core.graphics.get
+import androidx.core.view.doOnLayout
 
 
 class MainActivity : AppCompatActivity() {
@@ -100,6 +101,7 @@ class MainActivity : AppCompatActivity() {
             try {
                 val backgroundUri = backgroundUriString?.toUri()
                 viewBinding.basisImage.setImageURI(backgroundUri)
+                viewBinding.foundation.setImageURI(backgroundUri)
                 val readOnlyMode = "r"
                 contentResolver.openFileDescriptor(
                     backgroundUri!!, readOnlyMode
@@ -126,6 +128,28 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+
+//        viewBinding.viewFinder.doOnLayout {
+//
+//
+//        }
+////         Scale the camera preview to match the basis image
+//        val bIHeight = viewBinding.basisImage.height
+//        val bIWidth = viewBinding.basisImage.width
+//        val vFHeight = viewBinding.viewFinder.height
+//        val vFWidth = viewBinding.viewFinder.width
+//
+//        println("Dimensions: $bIHeight $bIWidth $vFHeight $vFWidth")
+//
+//        if (bIHeight < 30) {
+//            viewBinding.viewFinder.layoutParams.height = 300
+//        } else if (bIWidth < 30) {
+//            viewBinding.viewFinder.layoutParams.width = 300
+//        } else {
+//            viewBinding.viewFinder.layoutParams.height = viewBinding.basisImage.height
+//            viewBinding.viewFinder.layoutParams.width = viewBinding.basisImage.width
+//        }
+//
         //      set image transparency using value from SharedPrefs
         val transparencyValue =
             androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)

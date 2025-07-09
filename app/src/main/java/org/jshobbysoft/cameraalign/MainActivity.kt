@@ -55,7 +55,6 @@ import androidx.core.net.toUri
 import androidx.core.graphics.createBitmap
 import androidx.core.content.edit
 import androidx.core.graphics.get
-import androidx.core.view.doOnLayout
 
 
 class MainActivity : AppCompatActivity() {
@@ -101,7 +100,6 @@ class MainActivity : AppCompatActivity() {
             try {
                 val backgroundUri = backgroundUriString?.toUri()
                 viewBinding.basisImage.setImageURI(backgroundUri)
-                viewBinding.foundation.setImageURI(backgroundUri)
                 val readOnlyMode = "r"
                 contentResolver.openFileDescriptor(
                     backgroundUri!!, readOnlyMode
@@ -128,28 +126,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
-//        viewBinding.viewFinder.doOnLayout {
-//
-//
-//        }
-////         Scale the camera preview to match the basis image
-//        val bIHeight = viewBinding.basisImage.height
-//        val bIWidth = viewBinding.basisImage.width
-//        val vFHeight = viewBinding.viewFinder.height
-//        val vFWidth = viewBinding.viewFinder.width
-//
-//        println("Dimensions: $bIHeight $bIWidth $vFHeight $vFWidth")
-//
-//        if (bIHeight < 30) {
-//            viewBinding.viewFinder.layoutParams.height = 300
-//        } else if (bIWidth < 30) {
-//            viewBinding.viewFinder.layoutParams.width = 300
-//        } else {
-//            viewBinding.viewFinder.layoutParams.height = viewBinding.basisImage.height
-//            viewBinding.viewFinder.layoutParams.width = viewBinding.basisImage.width
-//        }
-//
         //      set image transparency using value from SharedPrefs
         val transparencyValue =
             androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
@@ -219,6 +195,19 @@ class MainActivity : AppCompatActivity() {
             val gallery =
                 Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
             resultLauncher.launch(gallery)
+            viewBinding.viewFinder.layoutParams.width = viewBinding.basisImage.width
+            viewBinding.viewFinder.layoutParams.height = viewBinding.basisImage.height
+            viewBinding.viewFinder.invalidate()
+            viewBinding.viewFinder.requestLayout()
+            viewBinding.viewFinder.forceLayout()
+        }
+
+        viewBinding.fitPreview.setOnClickListener {
+            viewBinding.viewFinder.layoutParams.width = viewBinding.basisImage.width
+            viewBinding.viewFinder.layoutParams.height = viewBinding.basisImage.height
+            viewBinding.viewFinder.invalidate()
+            viewBinding.viewFinder.requestLayout()
+            viewBinding.viewFinder.forceLayout()
         }
 
         // Set up the listeners for take photo button
@@ -279,6 +268,22 @@ class MainActivity : AppCompatActivity() {
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
+//    override fun onResume() {
+//        super.onResume()
+////        println("In OnResume")
+////        viewBinding.basisImage.invalidate()
+////        viewBinding.basisImage.requestLayout()
+////        viewBinding.basisImage.forceLayout()
+//        println("onResume: ${viewBinding.basisImage.width} ${viewBinding.basisImage.height}")
+//        if (viewBinding.basisImage.width != 297 && viewBinding.basisImage.height != 297) {
+//            viewBinding.viewFinder.layoutParams.width = viewBinding.basisImage.width
+//            viewBinding.viewFinder.layoutParams.height = viewBinding.basisImage.height
+////            viewBinding.viewFinder.requestLayout()
+////            viewBinding.viewFinder.invalidate()
+////            viewBinding.viewFinder.forceLayout()
+//        }
+//    }
+
     private var resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
@@ -289,12 +294,6 @@ class MainActivity : AppCompatActivity() {
                         Intent.FLAG_GRANT_WRITE_URI_PERMISSION
                 imageUri?.let { contentResolver.takePersistableUriPermission(it, takeFlags) }
                 viewBinding.basisImage.setImageURI(imageUri)
-//                val sharedPref =
-                    androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
-//                with(sharedPref.edit()) {
-//                    putString("background_uri_key", imageUri.toString())
-//                    apply()
-//                }
                 androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
                     .edit { putString("background_uri_key", imageUri.toString()) }
 

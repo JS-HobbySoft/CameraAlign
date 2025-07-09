@@ -6,25 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <ImageView
-        android:id="@+id/foundation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/imageViewDescription"
-        android:src="@drawable/ic_launcher_background"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
     <androidx.camera.view.PreviewView
         android:id="@+id/viewFinder"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintLeft_toLeftOf="@id/foundation"
-        app:layout_constraintRight_toRightOf="@id/foundation"
-        app:layout_constraintTop_toTopOf="@id/foundation"
-        app:layout_constraintBottom_toBottomOf="@id/foundation"/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <ImageView
         android:id="@+id/basisImage"
@@ -193,6 +182,20 @@
         android:text="@string/rotate_image_string"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/image_hflip_button"
+        app:layout_constraintEnd_toEndOf="@id/fit_preview"/>
+
+    <Button
+        android:id="@+id/fit_preview"
+        android:layout_width="@dimen/buttonWidth"
+        android:layout_height="@dimen/buttonHeight"
+        android:layout_marginStart="@dimen/marginValue"
+        android:layout_marginEnd="@dimen/marginValue"
+        android:layout_marginBottom="@dimen/marginValueBottom"
+        android:layout_marginTop="@dimen/marginValueBottom"
+        android:elevation="2dp"
+        android:text="@string/fit_preview"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/image_rotate_button"
         app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

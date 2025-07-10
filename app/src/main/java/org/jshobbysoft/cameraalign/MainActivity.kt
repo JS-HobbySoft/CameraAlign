@@ -55,6 +55,7 @@ import androidx.core.net.toUri
 import androidx.core.graphics.createBitmap
 import androidx.core.content.edit
 import androidx.core.graphics.get
+import androidx.core.view.doOnLayout
 
 
 class MainActivity : AppCompatActivity() {
@@ -195,19 +196,6 @@ class MainActivity : AppCompatActivity() {
             val gallery =
                 Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
             resultLauncher.launch(gallery)
-            viewBinding.viewFinder.layoutParams.width = viewBinding.basisImage.width
-            viewBinding.viewFinder.layoutParams.height = viewBinding.basisImage.height
-            viewBinding.viewFinder.invalidate()
-            viewBinding.viewFinder.requestLayout()
-            viewBinding.viewFinder.forceLayout()
-        }
-
-        viewBinding.fitPreview.setOnClickListener {
-            viewBinding.viewFinder.layoutParams.width = viewBinding.basisImage.width
-            viewBinding.viewFinder.layoutParams.height = viewBinding.basisImage.height
-            viewBinding.viewFinder.invalidate()
-            viewBinding.viewFinder.requestLayout()
-            viewBinding.viewFinder.forceLayout()
         }
 
         // Set up the listeners for take photo button
@@ -268,21 +256,18 @@ class MainActivity : AppCompatActivity() {
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
-//    override fun onResume() {
-//        super.onResume()
-////        println("In OnResume")
-////        viewBinding.basisImage.invalidate()
-////        viewBinding.basisImage.requestLayout()
-////        viewBinding.basisImage.forceLayout()
-//        println("onResume: ${viewBinding.basisImage.width} ${viewBinding.basisImage.height}")
-//        if (viewBinding.basisImage.width != 297 && viewBinding.basisImage.height != 297) {
-//            viewBinding.viewFinder.layoutParams.width = viewBinding.basisImage.width
-//            viewBinding.viewFinder.layoutParams.height = viewBinding.basisImage.height
-////            viewBinding.viewFinder.requestLayout()
-////            viewBinding.viewFinder.invalidate()
-////            viewBinding.viewFinder.forceLayout()
-//        }
-//    }
+    override fun onResume() {
+        super.onResume()
+        if (androidx.preference.PreferenceManager.getDefaultSharedPreferences(this).getString("background_uri_key", "") != "") {
+            viewBinding.root.doOnLayout {
+                viewBinding.viewFinder.layoutParams.width = viewBinding.basisImage.width
+                viewBinding.viewFinder.layoutParams.height = viewBinding.basisImage.height
+                viewBinding.viewFinder.invalidate()
+                viewBinding.viewFinder.requestLayout()
+                viewBinding.viewFinder.forceLayout()
+            }
+        }
+    }
 
     private var resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

@@ -17,7 +17,6 @@
     <string name="transparent_image">transparent image</string>
     <string name="image_v_flip">Image V-flip</string>
     <string name="image_h_flip">Image H-flip</string>
-    <string name="fit_preview">Scale camera</string>
 
     <string-array name="greenScreenEntries">
         <item>Live Preview</item>

@@ -182,20 +182,5 @@
         android:text="@string/rotate_image_string"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/image_hflip_button"
-        app:layout_constraintEnd_toEndOf="@id/fit_preview"/>
-
-    <Button
-        android:id="@+id/fit_preview"
-        android:layout_width="@dimen/buttonWidth"
-        android:layout_height="@dimen/buttonHeight"
-        android:layout_marginStart="@dimen/marginValue"
-        android:layout_marginEnd="@dimen/marginValue"
-        android:layout_marginBottom="@dimen/marginValueBottom"
-        android:layout_marginTop="@dimen/marginValueBottom"
-        android:elevation="2dp"
-        android:text="@string/fit_preview"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@id/image_rotate_button"
         app:layout_constraintEnd_toEndOf="parent"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

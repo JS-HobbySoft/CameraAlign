@@ -204,6 +204,11 @@ class MainActivity : AppCompatActivity() {
         // Set up image rotation button
         viewBinding.imageRotateButton.setOnClickListener {
             viewBinding.basisImage.rotation = viewBinding.basisImage.rotation + 90
+            viewBinding.viewFinder.layoutParams.width = viewBinding.basisImage.height
+            viewBinding.viewFinder.layoutParams.height = viewBinding.basisImage.width
+            viewBinding.viewFinder.invalidate()
+            viewBinding.viewFinder.requestLayout()
+            viewBinding.viewFinder.forceLayout()
         }
 
         // Set up image vertical flip button

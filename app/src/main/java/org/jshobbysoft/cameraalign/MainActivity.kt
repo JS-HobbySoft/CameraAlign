@@ -204,8 +204,15 @@ class MainActivity : AppCompatActivity() {
         // Set up image rotation button
         viewBinding.imageRotateButton.setOnClickListener {
             viewBinding.basisImage.rotation = viewBinding.basisImage.rotation + 90
-            viewBinding.viewFinder.layoutParams.width = viewBinding.basisImage.height
-            viewBinding.viewFinder.layoutParams.height = viewBinding.basisImage.width
+            val angleMod = viewBinding.basisImage.rotation / 90.0
+            val rotRemainder = angleMod % 2
+            if (rotRemainder == 1.0) {
+                viewBinding.viewFinder.layoutParams.width = viewBinding.basisImage.height
+                viewBinding.viewFinder.layoutParams.height = viewBinding.basisImage.width
+            } else {
+                viewBinding.viewFinder.layoutParams.width = viewBinding.basisImage.width
+                viewBinding.viewFinder.layoutParams.height = viewBinding.basisImage.height
+            }
             viewBinding.viewFinder.invalidate()
             viewBinding.viewFinder.requestLayout()
             viewBinding.viewFinder.forceLayout()

@@ -1,0 +1,1 @@
+Update target SDK and improve scaling of image and camera preview

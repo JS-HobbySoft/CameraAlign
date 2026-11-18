@@ -8,6 +8,8 @@ Version 2.0 adds zoom with seekbar to image preview. It will also save the zoom 
 
 Version 3.0 adds the capability to pick a color in the camera preview or saved image to be transparent to produce green screen effects.  
 
+For an updated app that works better with newer versions of Android and has a new "stop motion" feature, take a look at the Next Generation of CameraAlign [here](https://github.com/JS-HobbySoft/CameraAlignNG)
+
 Currently I use this app as a quick way to align the antennas for my software defined radios with a fixed point, but there can be other uses as well.
 
 This app has no ads or in-app purchases and collects no data.
